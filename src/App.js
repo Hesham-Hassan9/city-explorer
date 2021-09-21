@@ -51,8 +51,9 @@ class App extends React.Component {
     // await this.setState({
     //   search: e.target.city.value
     // });
-    const WEATHER = `http://localhost:3002/getweather?citName=${this.state.search}`;
-    // const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}?citName=${this.state.search}`;
+    const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?citName=${this.state.search}`;
+    // const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?citName=${this.state.search}`;
+    // const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?citName=${this.state.search}`;
 
     console.log(WEATHER);
     const weatherResponse = await axios.get(WEATHER);
