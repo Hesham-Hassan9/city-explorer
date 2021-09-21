@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image'
-import Weather from './Components/Weather.js';
+import Weather from './Components/Weather.js'
 import './Style.css';
 
 
@@ -14,6 +14,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       result: {},
+      forecastArr: [],
       search: '',
       showInfo: false,
       showError: false,
@@ -24,6 +25,7 @@ class App extends React.Component {
     e.preventDefault();
     await this.setState({
       search: e.target.city.value
+
     })
     try {
       let reqUrl = `https://us1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&q=${this.state.search}&format=json`;
@@ -34,7 +36,6 @@ class App extends React.Component {
         showInfo: true,
         showError: false
       })
-
     } catch {
       console.log('something went wrong')
       this.setState({
@@ -42,16 +43,21 @@ class App extends React.Component {
         showInfo: false
       })
     }
+    this.getWeather();
   }
 
   getWeather = async () => {
-    try {
-      const WEATHER = `https://city-explorer-api9.herokuapp.com/weather?citName=${this.state.search}`;
-      const weatherResponse = await axios.get(WEATHER);
-      this.setState({ forecastArr: weatherResponse.data })
-    } catch (error) {
-      this.setState({ errors: error.response.data.error, displayAlert: true })
-    }
+    // e.preventDefault();
+    // await this.setState({
+    //   search: e.target.city.value
+    // });
+    const WEATHER = `http://localhost:3002/getweather?citName=${this.state.search}`;
+    // const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}?citName=${this.state.search}`;
+
+    console.log(WEATHER);
+    const weatherResponse = await axios.get(WEATHER);
+    console.log(weatherResponse.data);
+    await this.setState({ forecastArr: weatherResponse.data });
   }
 
 
@@ -76,13 +82,18 @@ class App extends React.Component {
             <p>longitude: {this.state.result.lon} </p>
             <Image src={`https://maps.locationiq.com/v3/staticmap?key=f5de8e48adbdc6&center=${this.state.result.lat},${this.state.result.lon}&zoom=10`} alt="city" width={800} height={825} id="map" />
 
+            {this.state.forecastArr.map(info => {
+              return (
+                <Weather forecastArr={info} />
+              )
+            })}
+
           </>
         }
         {this.state.showError &&
           <p>Something went wrong in getting location data</p>
         }
 
-        <Weather weather={this.state.weather} />
 
       </>
     )
