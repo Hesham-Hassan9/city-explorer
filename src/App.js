@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Image from 'react-bootstrap/Image'
 import Weather from './Components/Weather.js'
+import Movies from './Components/Movies.js'
 import './Style.css';
 
 
@@ -15,6 +16,7 @@ class App extends React.Component {
     this.state = {
       result: {},
       forecastArr: [],
+      forecastArrMovies: [],
       search: '',
       showInfo: false,
       showError: false,
@@ -44,21 +46,27 @@ class App extends React.Component {
       })
     }
     this.getWeather();
+    this.getMovies();
   }
 
   getWeather = async () => {
-    // e.preventDefault();
-    // await this.setState({
-    //   search: e.target.city.value
-    // });
-    const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?citName=${this.state.search}`;
-    // const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?citName=${this.state.search}`;
-    // const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?citName=${this.state.search}`;
+    const WEATHER = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getweather?searchQuery=${this.state.search}`;
+    const localhost = `http://localhost:3002/getweather?searchQuery=${this.state.search}`;
 
-    console.log(WEATHER);
+    console.log(localhost);
     const weatherResponse = await axios.get(WEATHER);
     console.log(weatherResponse.data);
     await this.setState({ forecastArr: weatherResponse.data });
+  }
+
+  getMovies = async () => {
+    const MoviesURL = `${process.env.REACT_APP_LOCATIONIQ_LINK}/getmovies?searchQuery=${this.state.search}`;
+    const localhost = `http://localhost:3002/getmovies?searchQuery=${this.state.search}`;
+
+    console.log(localhost);
+    const moviesResponse = await axios.get(MoviesURL);
+    console.log(moviesResponse.data);
+    await this.setState({ forecastArrMovies: moviesResponse.data });
   }
 
 
@@ -86,6 +94,13 @@ class App extends React.Component {
             {this.state.forecastArr.map(info => {
               return (
                 <Weather forecastArr={info} />
+                
+              )
+            })}
+
+{this.state.forecastArrMovies.map(info => {
+              return (
+                <Movies forecastArrMovies={info}/>
               )
             })}
 
